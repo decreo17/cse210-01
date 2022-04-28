@@ -6,15 +6,23 @@ Author: Dhener Trinidad
 Part of the codes were from source: https://geekflare.com/tic-tac-toe-python-code/ and solution
                                     https://www.geeksforgeeks.org/print-colors-python-terminal/
 """
-"""
-todo: 
-    add input validation
-    do not allow to override the current input
-"""
+winner = ""
 
 def make_move(player, board):
-    square = int(input(f"{player}'s turn, choose (1-{len(board)}): "))
-    board[square - 1] = player
+    try:
+        square = int(input(f"{player}'s turn, choose (1-{len(board)}): "))
+        if square < 1:
+            print(f"Invalid input. Please select a number from 1-{len(board)}")
+            make_move(player, board)
+            
+        if board[square - 1] == "X" or board[square - 1] == "O":
+            print("That was already taken. Please select another position")
+            make_move(player, board)
+        else:
+            board[square - 1] = player
+    except:
+        print(f"Invalid input. Please select a number from 1-{len(board)}")
+        make_move(player, board)
 
 def is_draw(board):
     """This will check if all is string, then it's a draw"""
@@ -29,6 +37,7 @@ def is_player_win(player, board, dimension):
     board = list(divide_chunks(board, dimension))
     player = player.strip()
     n = len(board)
+    global winner
     
     # checking rows
     for i in range(n):
@@ -38,7 +47,7 @@ def is_player_win(player, board, dimension):
                 win = False
                 break
         if win:
-            print(f"{player} win!")
+            winner = player
             return win
     # checking columns
     for i in range(n):
@@ -48,7 +57,7 @@ def is_player_win(player, board, dimension):
                 win = False
                 break
         if win:
-            print(f"{player} win!")
+            winner = player
             return win
     # checking diagonals
     win = True
@@ -57,7 +66,7 @@ def is_player_win(player, board, dimension):
             win = False
             break
     if win:
-        print(f"{player} win!")
+        winner = player
         return win
 
     win = True
@@ -67,6 +76,7 @@ def is_player_win(player, board, dimension):
             break
     if win:
         print(f"{player} win!")
+        winner = player
         return win
     return False
 
@@ -127,7 +137,7 @@ def main():
         player = next_player(player)
 
     display_game(board, dimension)
-    print("Good game. Thanks for playing!") 
+    print(f"{winner} wins! Good game. Thanks for playing!") 
 
 if __name__ == "__main__":
     main()
